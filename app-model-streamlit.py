@@ -1,7 +1,6 @@
 import streamlit as st
 import os
 from PIL import Image
-import tensorflow as tf
 import numpy as np
 
 # Function to load the saved model
