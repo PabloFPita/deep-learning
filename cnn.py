@@ -7,7 +7,6 @@ import torchvision
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from results import Results
 from tempfile import TemporaryDirectory
 import json
 
