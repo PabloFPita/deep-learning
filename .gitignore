@@ -1,3 +1,6 @@
-*.png
-*.jpg
-*.jpg
+# Ignore files in the wandb directory
+.wandb/
+# Ignore .env file
+.env
+# Ignore pycache
+__pycache__/
