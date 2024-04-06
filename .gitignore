@@ -1,5 +1,5 @@
 # Ignore files in the wandb directory
-.wandb/
+wandb/
 # Ignore .env file
 .env
 # Ignore pycache
