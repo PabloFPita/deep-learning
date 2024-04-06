@@ -9,6 +9,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 from tempfile import TemporaryDirectory
 import json
+import wandb
 
 class CNN(nn.Module):
     """Convolutional Neural Network model for image classification."""
@@ -106,6 +107,10 @@ class CNN(nn.Module):
                 print(f'Epoch {epoch + 1}/{epochs} - '
                       f'Train Loss: {train_loss:.4f}, '
                       f'Train Accuracy: {train_accuracy:.4f}')
+
+                # Log the training loss and accuracy to W&B
+                wandb.log({"Train Loss": train_loss})
+                wandb.log({"Train Accuracy": train_accuracy})
                 
                 
                 self.eval()
@@ -125,6 +130,10 @@ class CNN(nn.Module):
                 print(f'Epoch {epoch + 1}/{epochs} - '
                         f'Validation Loss: {valid_loss:.4f}, '
                         f'Validation Accuracy: {valid_accuracy:.4f}')
+                
+                # Log the validation loss and accuracy to W&B
+                wandb.log({"Validation Loss": valid_loss})
+                wandb.log({"Validation Accuracy": valid_accuracy})
                 
                 if epoch % nepochs_to_save == 0:
                     if valid_accuracy > best_accuracy:
@@ -150,36 +159,6 @@ class CNN(nn.Module):
             outputs = self(images)
             predicted_labels.extend(outputs.argmax(1).tolist())
         return predicted_labels
-    
-
-    def predict_single_image(self, image):
-        """Predict the class of a single image.
-
-        Args:
-            image: Image to predict.
-
-        Returns:
-            predicted_label: Predicted class.
-        """
-        self.eval()
-         # Convert grayscale image to RGB if necessary
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
-
-        preprocess = transforms.Compose([
-            transforms.Resize(224),  # Resize the image to fit the model input size
-            transforms.ToTensor(),   # Convert the image to a PyTorch tensor
-            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalize the image
-        ])
-
-        # Preprocess the image
-        image = preprocess(image).unsqueeze(0)  # Add batch dimension
-        
-        with torch.no_grad():
-            output = self(image)
-            predicted_label = output.argmax(1).item()
-        return predicted_label
-        
         
     def save(self, filename: str):
         """Save the model to disk.
