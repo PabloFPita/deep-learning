@@ -1,26 +1,34 @@
 import streamlit as st
 import os
 from PIL import Image
+import torch
 import numpy as np
+import torch.nn.functional as F
+from cnn import load_model_weights
+from cnn import CNN
+import torchvision
 
 # Function to load the saved model
-@st.cache(allow_output_mutation=True)
+@st.cache_data()
 def load_model():
-    model_path = './model/modelo1.h5'
-    model = tf.keras.models.load_model(model_path)
-    return model
+    # Load model
+    model_weights = load_model_weights('resnet50-1epoch')
+    my_trained_model = CNN(torchvision.models.resnet50(weights='DEFAULT'), 15)
+    my_trained_model.load_state_dict(model_weights)
 
-# Function to make predictions
+    return my_trained_model
+
+
 def predict(image, model):
-    # Preprocess the image
-    image = np.array(image.resize((224, 224))) / 255.0  # Assuming input shape is (224, 224, 3)
-    image = np.expand_dims(image, axis=0)
+    response = model.predict_single_image(image)
 
-    # Make prediction
-    prediction = model.predict(image)
-    return prediction
+    return response
+
+
 
 def main():
+    favicon_path = "favicon-32x32.png" # Path to the favicon 
+    st.set_page_config(page_title="Canonist.ia", page_icon=favicon_path)
     st.title('Image Classification of rooms using CNN')
 
     uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
