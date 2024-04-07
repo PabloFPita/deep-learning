@@ -8,7 +8,8 @@ import torchvision
 
 CLASSES = ['Bedroom', 'Coast', 'Forest', 'Highway', 'Industrial', 'Inside city', 'Kitchen', 'Living room', 'Mountain', 'Office', 'Open country', 'Store', 'Street', 'Suburb', 'Tall building']
 MODELS = ['resnet50-1epoch-one-layer-unfreezed',
-          'resnet50-1epoch']
+          'resnet50-1epoch',
+          'resnet50-10epochs-2unfreezedlayers']
 
 
 # Function to load the saved model
@@ -45,9 +46,10 @@ def main():
     st.session_state['feedback_choice'] = None
     print(st.session_state)
     # Configuración de la página para usar el ancho completo y centrar
-    favicon_path = "favicon-32x32.png" # Path to the favicon 
+    favicon_path = "img/canonistia_logo.png" # Path to the favicon 
     st.set_page_config(layout="wide", page_title="Canonist.ia", page_icon=favicon_path)
     style = "style='text-align: center;'"
+
 def translate_output_class(output_class: int):
     classes = ['bedroom', 'coast', 'forest', 'highway', 'industrial', 'inside city', 'kitchen', 'living room', 
                'mountain', 'office', 'open country', 'store', 'street', 'suburb', 'tall building']
@@ -57,16 +59,19 @@ def main():
     favicon_path = "img\canonistia_logo.png" # Path to the favicon 
     st.set_page_config(page_title="Canonist.ia", page_icon=favicon_path, initial_sidebar_state="expanded")
     style = "style='text-align: center;'"
-    st.title('Image Classification of rooms using CNN')
-
-    st.write(f"<h1 {style}>Canonist.ia</h1>", unsafe_allow_html=True)
-    st.write(f"<p {style}>Your API for real estate portal image classification</p>", unsafe_allow_html=True)
+    # Logo of the application and title, next to each other
+    logo_path = "img/canonistia_logo.png"
+    col1, col2 = st.columns([1, 6])
+    with col1:
+        st.image(logo_path, width=100)
+    with col2:
+        st.write(f"<h1>Canonist.ia</h1>", unsafe_allow_html=True)
+    
+    st.write(f"<p>Your API for real estate portal image classification</p>", unsafe_allow_html=True)
 
     # Subir imagen
-    st.write(f"<h2 {style}>Upload your image</h2>", unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        uploaded_file = st.file_uploader("Upload an image...", type=['png', 'jpg', 'jpeg'])
+    st.write(f"<h2>Upload your image</h2>", unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("", type=['png', 'jpg', 'jpeg'])
     
     if uploaded_file is not None:
         # Display the uploaded image
@@ -88,12 +93,10 @@ def main():
                 # Load the model
                 model = load_model(model_name)
                 # Make predictions
-                # prediction = predict(image, model)
+                prediction = predict(image, model)
                 # confidence = F.softmax(prediction, dim=1).max().item() * 100
-                prediction = 2
-                confidence = 75
                 # Display the prediction result
-                st.write(f"<h3 {style}>We are {confidence}% sure that your image is a...<br>{CLASSES[prediction]}</h3>", unsafe_allow_html=True)
+                st.write(f"<h3 {style}>Your image is a...<br>{CLASSES[prediction]}</h3>", unsafe_allow_html=True)
                 if st.button('✔️'):
                     st.success('Thank you for your feedback!')
                 # st.button('❌', on_click=show_feedback_select)
@@ -113,20 +116,6 @@ def main():
                         # os.rename(st.session_state['save_path'], new_path)
                         os.copyfile(st.session_state['save_path'], new_path)
                         st.success('Thank you for your feedback!')
-                            
-            
-
-            # Load the model
-            model = load_model()
-
-            # Make predictions
-            prediction = predict(image, model)
-            confidence = 75
-
-            prediction = translate_output_class(prediction)
-            # Display the prediction result
-            # Mostrar el porcentaje de confianza y la clase predicha
-            st.write(f"<h3 {style}>We are {confidence}% sure that your image is a...<br>{prediction}</h3>", unsafe_allow_html=True)
 
 
 
