@@ -12,8 +12,9 @@ import torchvision
 @st.cache_data()
 def load_model():
     # Load model
-    model_weights = load_model_weights('resnet50-1epoch')
-    my_trained_model = CNN(torchvision.models.resnet50(weights='DEFAULT'), 15)
+    # models\resnet50-10epochs-2unfreezedlayers.pt
+    model_weights = load_model_weights('resnet50-10epochs-2unfreezedlayers')
+    my_trained_model = CNN(torchvision.models.resnet50(weights='DEFAULT'), 15) # 15 different classes
     my_trained_model.load_state_dict(model_weights)
 
     return my_trained_model
@@ -27,7 +28,7 @@ def predict(image, model):
 
 
 def main():
-    favicon_path = "favicon-32x32.png" # Path to the favicon 
+    favicon_path = "img\canonistia_logo.png" # Path to the favicon 
     st.set_page_config(page_title="Canonist.ia", page_icon=favicon_path)
     st.title('Image Classification of rooms using CNN')
 
@@ -52,6 +53,7 @@ def main():
 
             # Display the prediction result
             st.write('Prediction:', prediction)
+
 
 if __name__ == "__main__":
     main()

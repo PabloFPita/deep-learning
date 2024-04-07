@@ -175,6 +175,7 @@ class CNN(nn.Module):
         # Save the model
         torch.save(self.state_dict(), filename+'.pt')
 
+
     @staticmethod
     def _plot_training(history):
         """Plot the training history.
@@ -199,7 +200,35 @@ class CNN(nn.Module):
 
         plt.show()
 
-    
+  
+    def predict_single_image(self, image):
+        """Predict the class of a single image.
+
+        Args:
+            image: Image to predict.
+
+        Returns:
+            predicted_label: Predicted class.
+        """
+        self.eval()
+         # Convert grayscale image to RGB if necessary
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+
+        preprocess = transforms.Compose([
+            transforms.Resize(224),  # Resize the image to fit the model input size
+            transforms.ToTensor(),   # Convert the image to a PyTorch tensor
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalize the image
+        ])
+
+        # Preprocess the image
+        image = preprocess(image).unsqueeze(0)  # Add batch dimension
+        
+        with torch.no_grad():
+            output = self(image)
+            predicted_label = output.argmax(1).item()
+        return predicted_label
+          
 
         
 

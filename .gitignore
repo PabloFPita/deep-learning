@@ -5,3 +5,5 @@ wandb/
 # Ignore pycache
 __pycache__/
 *.pyc
+# everything inside the tmp directory
+tmp/*
