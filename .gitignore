@@ -4,3 +4,4 @@ wandb/
 .env
 # Ignore pycache
 __pycache__/
+*.pyc
