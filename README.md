@@ -1,20 +1,25 @@
-# Deep Learning Lab Sessions
 
-Welcome to the Deep Learning Lab Sessions! In these sessions, we will explore various concepts and applications of deep learning. This readme file will provide you with an overview of each session, its objectives, and what you can expect to learn.
+<img src="img/canonistia_logo.png" width="300">
 
-By the end of these sessions, you will have a solid understanding of convolutional filters, transfer learning, and how to deploy a deep learning model in a real-world application.
+# Canonist.ia - Labelling of real estate images
 
-Happy learning!
+## Description
+**Canonist.ia** is a project intended for the **classification of real estate images**. Applying **deep learning and transfer learning** techniques within the **PyTorch** framework, different models have been trained to be used via a **Streamlit** web application.
 
-## Session 1: Understanding Convolutional Filters
+In the web application, users can upload images and the model will predict the category of the image. The project is particularly useful for real estate professionals and property owners.
 
-**Objective:** Gain a comprehensive understanding of convolutional filters and their role in Convolutional Neural Networks (CNNs).
+Experiment tracking is done with **Weights and Biases** to monitor the performance of the models and to refine them.
 
-In this session, we will delve into the workings of convolutional filters, which are the building blocks of Convolutional Neural Networks (CNNs). We will discuss how these filters help in extracting features from images, and how they contribute to the success of CNNs in computer vision tasks and how can we try to make CNNs more interpretable.
+## Installation
+To install the required packages, run the following command:
+```bash
+pip install -r requirements.txt
+```
 
-## Sessions 2-4: Transfer Learning and Deployment
+## Usage
+To **run the Streamlit web application**, execute the following command:
+```bash
+streamlit run app.py
+```
 
-**Objective:** Learn how to apply transfer learning to a simulated business case and deploy the model in a publicly available [Streamlit](https://streamlit.io/) app.
-
-In these sessions, we will focus on applying transfer learning to a real-world simulated business case. We will make use of several pre-trained model and fine-tune it to suit our specific needs. Once our model is ready, we will deploy it in a publicly available Streamlit app, allowing us to test the results in real life. We will discuss on best practices for Deep Learning experimentation,
-which can be costly and time consuming and we will make use of [Weights & Biases](https://wandb.ai/) web app.
+To **train different models**, modify the training.ipynb notebook and execute it. Make sure to have a Weights and Biases account to log the experiments and add the **API key** to a .env file.
