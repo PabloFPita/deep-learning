@@ -29,7 +29,8 @@ def predict(image, model):
 
 def main():
     favicon_path = "img\canonistia_logo.png" # Path to the favicon 
-    st.set_page_config(page_title="Canonist.ia", page_icon=favicon_path)
+    st.set_page_config(page_title="Canonist.ia", page_icon=favicon_path, initial_sidebar_state="expanded")
+    style = "style='text-align: center;'"
     st.title('Image Classification of rooms using CNN')
 
     uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
@@ -50,9 +51,11 @@ def main():
 
             # Make predictions
             prediction = predict(image, model)
-
+            confidence = 75
             # Display the prediction result
-            st.write('Prediction:', prediction)
+            # Mostrar el porcentaje de confianza y la clase predicha
+            st.write(f"<h3 {style}>We are {confidence}% sure that your image is a...<br>{prediction}</h3>", unsafe_allow_html=True)
+
 
 
 if __name__ == "__main__":
