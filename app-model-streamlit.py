@@ -1,9 +1,6 @@
 import streamlit as st
 import os
 from PIL import Image
-import torch
-import numpy as np
-import torch.nn.functional as F
 from cnn import load_model_weights
 from cnn import CNN
 import torchvision
@@ -25,7 +22,10 @@ def predict(image, model):
 
     return response
 
-
+def translate_output_class(output_class: int):
+    classes = ['bedroom', 'coast', 'forest', 'highway', 'industrial', 'inside city', 'kitchen', 'living room', 
+               'mountain', 'office', 'open country', 'store', 'street', 'suburb', 'tall building']
+    return classes[output_class]
 
 def main():
     favicon_path = "img\canonistia_logo.png" # Path to the favicon 
@@ -52,6 +52,8 @@ def main():
             # Make predictions
             prediction = predict(image, model)
             confidence = 75
+
+            prediction = translate_output_class(prediction)
             # Display the prediction result
             # Mostrar el porcentaje de confianza y la clase predicha
             st.write(f"<h3 {style}>We are {confidence}% sure that your image is a...<br>{prediction}</h3>", unsafe_allow_html=True)
