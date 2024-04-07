@@ -1,6 +1,15 @@
 import streamlit as st
 import os
 from streamlit_modal import Modal
+import streamlit as st
+import os
+from PIL import Image
+import torch
+import numpy as np
+import torch.nn.functional as F
+from cnn import load_model_weights
+from cnn import CNN
+import torchvision
 
 # Configuración de la página para usar el ancho completo
 st.set_page_config(layout="wide")
@@ -20,7 +29,22 @@ with col2:
 
 result = "Backyard"
 confidence = 75
+# Function to load the saved model
+@st.cache_data()
+def load_model():
+    # Load model
+    # models\resnet50-1epoch-one-layer-unfreezed.pt
+    model_weights = load_model_weights('resnet50-1epoch-one-layer-unfreezed')
+    my_trained_model = CNN(torchvision.models.resnet50(weights='DEFAULT'), 15) # 15 different classes
+    my_trained_model.load_state_dict(model_weights)
 
+    return my_trained_model
+
+
+def predict(image, model):
+    response = model.predict_single_image(image)
+
+    return response
 # Mostrar el porcentaje de confianza y la clase predicha
 st.write(f"<h3 {style}>We are {confidence}% sure that your image is a...<br>{result}</h3>", unsafe_allow_html=True)
 

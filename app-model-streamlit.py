@@ -1,9 +1,6 @@
 import streamlit as st
 import os
 from PIL import Image
-import torch
-import numpy as np
-import torch.nn.functional as F
 from cnn import load_model_weights
 from cnn import CNN
 import torchvision
@@ -20,6 +17,9 @@ def load_model(model_name):
     # Load model
     model_weights = load_model_weights(model_name)
     my_trained_model = CNN(torchvision.models.resnet50(weights='DEFAULT'), 15)
+    # models\resnet50-10epochs-2unfreezedlayers.pt
+    model_weights = load_model_weights('resnet50-10epochs-2unfreezedlayers')
+    my_trained_model = CNN(torchvision.models.resnet50(weights='DEFAULT'), 15) # 15 different classes
     my_trained_model.load_state_dict(model_weights)
     return my_trained_model
 
@@ -48,6 +48,16 @@ def main():
     favicon_path = "favicon-32x32.png" # Path to the favicon 
     st.set_page_config(layout="wide", page_title="Canonist.ia", page_icon=favicon_path)
     style = "style='text-align: center;'"
+def translate_output_class(output_class: int):
+    classes = ['bedroom', 'coast', 'forest', 'highway', 'industrial', 'inside city', 'kitchen', 'living room', 
+               'mountain', 'office', 'open country', 'store', 'street', 'suburb', 'tall building']
+    return classes[output_class]
+
+def main():
+    favicon_path = "img\canonistia_logo.png" # Path to the favicon 
+    st.set_page_config(page_title="Canonist.ia", page_icon=favicon_path, initial_sidebar_state="expanded")
+    style = "style='text-align: center;'"
+    st.title('Image Classification of rooms using CNN')
 
     st.write(f"<h1 {style}>Canonist.ia</h1>", unsafe_allow_html=True)
     st.write(f"<p {style}>Your API for real estate portal image classification</p>", unsafe_allow_html=True)
@@ -105,6 +115,19 @@ def main():
                         st.success('Thank you for your feedback!')
                             
             
+
+            # Load the model
+            model = load_model()
+
+            # Make predictions
+            prediction = predict(image, model)
+            confidence = 75
+
+            prediction = translate_output_class(prediction)
+            # Display the prediction result
+            # Mostrar el porcentaje de confianza y la clase predicha
+            st.write(f"<h3 {style}>We are {confidence}% sure that your image is a...<br>{prediction}</h3>", unsafe_allow_html=True)
+
 
 
 if __name__ == "__main__":
