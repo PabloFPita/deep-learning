@@ -12,8 +12,9 @@ import torchvision
 @st.cache_data()
 def load_model():
     # Load model
-    model_weights = load_model_weights('resnet50-1epoch')
-    my_trained_model = CNN(torchvision.models.resnet50(weights='DEFAULT'), 15)
+    # models\resnet50-1epoch-one-layer-unfreezed.pt
+    model_weights = load_model_weights('resnet50-1epoch-one-layer-unfreezed')
+    my_trained_model = CNN(torchvision.models.resnet50(weights='DEFAULT'), 15) # 15 different classes
     my_trained_model.load_state_dict(model_weights)
 
     return my_trained_model
@@ -52,6 +53,7 @@ def main():
 
             # Display the prediction result
             st.write('Prediction:', prediction)
+
 
 if __name__ == "__main__":
     main()

@@ -196,6 +196,7 @@ class CNN(nn.Module):
         # Save the model
         torch.save(self.state_dict(), filename+'.pt')
 
+
     @staticmethod
     def _plot_training(history):
         """Plot the training history.
