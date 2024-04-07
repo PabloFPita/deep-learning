@@ -4,3 +4,5 @@ wandb/
 .env
 # Ignore pycache
 __pycache__/
+# everything inside the tmp directory
+tmp/*
