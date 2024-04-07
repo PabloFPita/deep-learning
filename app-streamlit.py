@@ -5,6 +5,7 @@ from cnn import load_model_weights
 from cnn import CNN
 import torchvision
 from pathlib import Path
+import shutil
 
 
 CLASSES = ['Bedroom', 'Coast', 'Forest', 'Highway', 'Industrial', 'Inside city', 'Kitchen', 'Living room', 'Mountain', 'Office', 'Open country', 'Store', 'Street', 'Suburb', 'Tall building']
@@ -49,7 +50,10 @@ def main():
     st.session_state['save_path'] = None
     st.session_state['model_name'] = "resnet50-10epochs-2unfreezedlayers"
     st.session_state['show_feedback_form'] = False
-    st.session_state['feedback_choice'] = None
+    st.session_state['feedback_option'] = None
+    st.session_state['show_feedback_form'] = False
+    st.session_state['choice'] = None
+    st.session_state['feedback_submitted'] = False
 
     favicon_path = "img\canonistia_logo.png" # Path to the favicon 
     st.set_page_config(page_title="Canonist.ia", page_icon=favicon_path, initial_sidebar_state="auto")
@@ -103,23 +107,38 @@ def main():
                 # Display the prediction result
                 st.write(f"<h3 {style}>The model {model_name} is {confidence}% sure that your image is a...<br>{CLASSES[prediction]}</h3>", unsafe_allow_html=True)
 
-                if st.button('✔️'):
-                    st.success('Thank you for your feedback!')
-                    
-                if st.button('❌'):
+                # Mostrar el widget radio solo si no se ha seleccionado una opción
+                if st.session_state['feedback_option'] is None:
+                    feedback_option = st.radio("Feedback:", ['✔️', '❌'], index=None)
+
+                    # Actualizar el estado de sesión basado en la selección
+                    if feedback_option in ['✔️', '❌']:
+                        st.session_state['feedback_option'] = feedback_option
+
+                        # Mensaje de agradecimiento por el feedback positivo
+                        if feedback_option == '✔️':
+                            st.session_state['choice'] = CLASSES[prediction]
+
+                # Manejar la lógica de mostrar el formulario de feedback si se eligió la opción negativa
+                if st.session_state['feedback_option'] == '❌':
                     st.session_state['show_feedback_form'] = True
+                else:
+                    st.session_state['show_feedback_form'] = False
+
                 if st.session_state.get('show_feedback_form'):
                     st.write("What was actually your image?")
                     choice = st.selectbox("Select the correct option:", CLASSES)
+                    st.session_state['choice'] = choice
                     
-                    if st.session_state['feedback_choice'] is not None:
+                if st.button('Submit Feedback'):
+                    new_folder = os.path.join('dataset', 'new', st.session_state['choice'])
+                    if not os.path.exists(new_folder):
+                        os.makedirs(new_folder)
+                    new_path = os.path.join(new_folder, st.session_state['image_name'])
+                    shutil.copyfile(st.session_state['save_path'], new_path)
+                    st.session_state['feedback_submitted'] = True
+                    st.success('Feedback submitted successfully!')
 
-                        new_folder = os.path.join('dataset', 'new', choice)
-                        if not os.path.exists(new_folder):
-                            os.makedirs(new_folder)
-                        new_path = os.path.join(new_folder, st.session_state['image_name'])
-                        os.copyfile(st.session_state['save_path'], new_path)
-                        st.success('Thank you for your feedback!')
 
 
 
