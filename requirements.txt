@@ -4,3 +4,4 @@ numpy
 matplotlib
 wandb
 torch
+streamlit
