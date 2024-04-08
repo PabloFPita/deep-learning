@@ -58,7 +58,7 @@ def main():
     st.session_state['feedback_submitted'] = False
 
     # Page configuration
-    favicon_path = "img\canonistia_logo.png" # Path to the favicon 
+    favicon_path = "img/canonistia_logo.png" # Path to the favicon 
     st.set_page_config(page_title="Canonist.ia", page_icon=favicon_path, initial_sidebar_state="auto")
     style = "style='text-align: center;'"  # Define the style for the HTML elements
 
