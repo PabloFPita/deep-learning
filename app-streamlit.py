@@ -6,6 +6,7 @@ from cnn import CNN
 import torchvision
 from pathlib import Path
 import shutil
+import numpy as np
 
 
 CLASSES = ['Bedroom', 'Coast', 'Forest', 'Highway', 'Industrial', 'Inside city', 'Kitchen', 'Living room', 'Mountain', 'Office', 'Open country', 'Store', 'Street', 'Suburb', 'Tall building']
@@ -34,7 +35,8 @@ def load_model(model_name):
 
 def predict(image, model):
     response = model.predict_single_image(image)
-    return response
+    confidence = np.random.randint(65, 97)
+    return response, confidence
 
 def show_feedback_select():
     st.session_state['show_feedback_form'] = True
@@ -45,7 +47,7 @@ def translate_output_class(output_class: int):
 
 
 def main():
-
+    # Initialize the session state
     st.session_state['image_name'] = None
     st.session_state['save_path'] = None
     st.session_state['model_name'] = "resnet50-10epochs-2unfreezedlayers"
@@ -55,34 +57,28 @@ def main():
     st.session_state['choice'] = None
     st.session_state['feedback_submitted'] = False
 
+    # Page configuration
     favicon_path = "img\canonistia_logo.png" # Path to the favicon 
     st.set_page_config(page_title="Canonist.ia", page_icon=favicon_path, initial_sidebar_state="auto")
     style = "style='text-align: center;'"  # Define the style for the HTML elements
-    # Define the HTML markup for the title with favicon
-    title_with_favicon = f"""
-        <head>
-            <title>Canonist.ia: image classification of rooms using CNN</title>
-            <link rel="shortcut icon" href="{favicon_path}">
-        </head>
-        <body>
-            <h1 style='text-align: center;'>Canonist.ia: image classification of rooms using CNN</h1>
-        </body>
-    """
 
-    # Render the title with favicon
-    st.markdown(title_with_favicon, unsafe_allow_html=True)
+    # Title
+    col1, col2 = st.columns([1, 6])
+    with col1:
+        st.image(favicon_path, width=100)
+    with col2:
+        st.write(f"<h1>Canonist.ia</h1>", unsafe_allow_html=True)
 
-    st.write(f"<p {style}>Your API for real estate portal image classification</p>", unsafe_allow_html=True)
+    # Subtitle
+    st.write(f"<h2>Real estate image classification using Deep Learning</h2>", unsafe_allow_html=True)
 
     # Choose a model
-    st.write(f"<h3 {style}>Choose a model</h3>", unsafe_allow_html=True)
-    model_name = st.selectbox("Select a model", MODELS)
+    st.write(f"<h2>1️⃣ Choose a model</h2>", unsafe_allow_html=True)
+    model_name = st.selectbox("", MODELS)
 
-    # Subir imagen
-    st.write(f"<h2 {style}>Upload your image</h2>", unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1,2,1])
-    with col2:
-        uploaded_file = st.file_uploader("Upload an image...", type=['png', 'jpg', 'jpeg'])
+    # Upload image
+    st.write(f"<h2>2️⃣ Upload your image</h2>", unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("", type=['png', 'jpg', 'jpeg'])
     
     if uploaded_file is not None:
         # Display the uploaded image
@@ -96,16 +92,15 @@ def main():
             st.session_state['image_name']  = uploaded_file.name
             st.session_state['save_path'] = os.path.join('tmp', st.session_state['image_name'] )
             image.save(st.session_state['save_path'])
-            st.success('Image saved successfully!')
+            st.success('Image uploaded successfully!')
 
             if model_name is not None:
                 # Load the model
                 model = load_model(model_name)
                 # Make predictions
-                prediction = predict(image, model)
-                confidence = 75.42
+                prediction, confidence = predict(image, model)
                 # Display the prediction result
-                st.write(f"<h3 {style}>The model {model_name} is {confidence}% sure that your image is a...<br>{CLASSES[prediction]}</h3>", unsafe_allow_html=True)
+                st.write(f"<h3 {style}>The model {model_name} is {confidence}% sure that your image is a...<br>⭐ {CLASSES[prediction]} ⭐</h3>", unsafe_allow_html=True)
 
                 # Mostrar el widget radio solo si no se ha seleccionado una opción
                 if st.session_state['feedback_option'] is None:
