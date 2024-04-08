@@ -1,0 +1,6 @@
+PIL
+torchvision
+numpy
+matplotlib
+wandb
+torch
