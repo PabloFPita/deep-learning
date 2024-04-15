@@ -50,7 +50,7 @@ def main():
     # Initialize the session state
     st.session_state['image_name'] = None
     st.session_state['save_path'] = None
-    st.session_state['model_name'] = "resnet50-10epochs-2unfreezedlayers"
+    st.session_state['model_name'] = "resnet50-20ufl-25epoch"
     st.session_state['show_feedback_form'] = False
     st.session_state['feedback_option'] = None
     st.session_state['show_feedback_form'] = False
